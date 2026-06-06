@@ -19,27 +19,27 @@ Phase 2: Document Extraction Pipeline
 [x] Fallback Mechanism: Create a predefined, hardcoded text variable of a sample contract to guarantee uninterrupted development and demo safety if the uploaded file is corrupted
 
 Phase 3: Core Legal Intelligence and JSON Enforcement
-[ ] Prompt Engineering: Draft a comprehensive system prompt for Gemini 2.5 Flash. The prompt must explicitly instruct the model to evaluate the text against the specified Indian frameworks
+[x] Prompt Engineering: Draft a comprehensive system prompt for Gemini 2.5 Flash. The prompt must explicitly instruct the model to evaluate the text against the specified Indian frameworks
 
-[ ] Schema Enforcement: Instruct the LLM to output exclusively in a strict JSON format containing overall risk scores, severity levels, and suggested redlines
+[x] Schema Enforcement: Instruct the LLM to output exclusively in a strict JSON format containing overall risk scores, severity levels, and suggested redlines
 
-[ ] Testing Inference: Feed the extracted text from Phase 2 into the Gemini model. Iterate on the prompt until the JSON output is perfectly consistent and parsing it with Python does not throw errors
+[x] Testing Inference: Feed the extracted text from Phase 2 into the Gemini model. Iterate on the prompt until the JSON output is perfectly consistent and parsing it with Python does not throw errors
 
 Phase 4: Visual Redlining and Document Manipulation
-[ ] Coordinate Mapping: Utilize PyMuPDF to iterate through the text snippets provided by the JSON output. Use the search methods to find the exact X and Y coordinates on the original PDF pages
+[x] Coordinate Mapping: Utilize PyMuPDF to iterate through the text snippets provided by the JSON output. Use the search methods to find the exact X and Y coordinates on the original PDF pages
 
-[ ] Annotation Application: Programmatically draw red strikethrough lines over the located coordinates
+[x] Annotation Application: Programmatically draw red strikethrough lines over the located coordinates
 
-[ ] Text Insertion: Draw a distinct bounding box adjacent to the struck-through text and insert the suggested replacement string
+[x] Text Insertion: Draw a distinct bounding box adjacent to the struck-through text and insert the suggested replacement string
 
-[ ] File Compilation: Save the annotated document to a temporary memory buffer and expose it as a downloadable file within the Streamlit interface
+[x] File Compilation: Save the annotated document to a temporary memory buffer and expose it as a downloadable file within the Streamlit interface
 
 Phase 5: Voice Explainer and Multi-lingual Support
-[ ] Translation API: Route the legal explanations from the JSON output through the Sarvam Translate REST API to convert the English analysis into Hindi or other regional languages
+[x] Translation API: Route the legal explanations from the JSON output through the Sarvam Translate REST API to convert the English analysis into Hindi or other regional languages
 
-[ ] Audio Generation: Pass the translated text to the Sarvam Text-to-Speech REST API to generate raw audio bytes
+[x] Audio Generation: Pass the translated text to the Sarvam Text-to-Speech REST API to generate raw audio bytes
 
-[ ] UI Integration: Embed Streamlit's audio component next to each flagged clause in the analysis column, allowing the user to play the explanation dynamically
+[x] UI Integration: Embed Streamlit's audio component next to each flagged clause in the analysis column, allowing the user to play the explanation dynamically
 
 Phase 6: Contingency Caching and Pitch Refinement
 [ ] Static Asset Generation: Process specific dummy contracts through the fully working pipeline. Save the final JSON outputs, the generated audio files, and the redlined PDFs locally

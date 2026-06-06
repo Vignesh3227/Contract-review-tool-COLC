@@ -1,27 +1,44 @@
 import os
 import streamlit as st
 from dotenv import load_dotenv
-from document_processor import process_document
+from document_processor import process_document, FALLBACK_CONTRACT_TEXT
+from audit_engine import run_contract_audit
+from redline_engine import create_dummy_pdf, generate_redlined_pdf
+from sarvam_service import translate_text, text_to_speech
 
-# Load environment variables
 load_dotenv()
 
-# Page Configuration
+
 st.set_page_config(
     page_title="NyayaRedline AI | Smart Contract Review",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
-# Session State Initialization
+
+LANGUAGES = {
+    "Hindi": "hi-IN",
+    "Telugu": "te-IN",
+    "Kannada": "kn-IN",
+    "Gujarati": "gu-IN",
+    "Tamil": "ta-IN"
+
+}
+
 if 'extracted_text' not in st.session_state:
     st.session_state['extracted_text'] = None
 if 'audit_results' not in st.session_state:
     st.session_state['audit_results'] = None
 if 'audit_started' not in st.session_state:
     st.session_state['audit_started'] = False
+if 'original_pdf_bytes' not in st.session_state:
+    st.session_state['original_pdf_bytes'] = None
+if 'redlined_pdf_bytes' not in st.session_state:
+    st.session_state['redlined_pdf_bytes'] = None
+if 'audio_cache' not in st.session_state:
+    st.session_state['audio_cache'] = {}
 
-# Sidebar Configuration
+
 with st.sidebar:
     st.header("Control Panel")
     st.subheader("System Status")
@@ -39,37 +56,50 @@ with st.sidebar:
         st.error("Sarvam AI REST: Missing Key")
         
     st.markdown("---")
-    # Tying the toggle directly to Phase 2 Fallback Mechanism
     demo_mode = st.toggle("Enable Offline Demo Mode (Fallback Data)", value=False)
     st.markdown("---")
     st.caption("NyayaRedline AI Framework")
 
-# Main Application Interface
+
 st.title("NyayaRedline AI")
 st.subheader("Smart Contract Review and Redlining Tool for MSMEs")
 st.markdown("---")
 
-# Two Column Layout
+
 col1, col2 = st.columns([1, 1], gap="large")
 
-# Left Column: Document Ingestion
+
 with col1:
     st.header("1. Document Input")
-    st.markdown("Upload a legal contract or agreement PDF to begin processing")
+    st.markdown("Upload a legal contract (PDF or Image) to begin processing")
     
-    uploaded_file = st.file_uploader("Select Contract File", type=["pdf"])
+    uploaded_file = st.file_uploader("Select Contract File", type=["pdf", "png", "jpg", "jpeg"])
     
     if uploaded_file is not None or demo_mode:
-        
         if demo_mode:
             st.warning("Demo Mode Active: Using fallback contract data")
-            st.session_state['extracted_text'] = process_document(b"", use_fallback=True)
+            st.session_state['extracted_text'] = process_document(b"", file_name="", use_fallback=True)
+            st.session_state['original_pdf_bytes'] = create_dummy_pdf(FALLBACK_CONTRACT_TEXT)
+            
         elif uploaded_file is not None:
             st.success(f"Loaded: {uploaded_file.name}")
+            if 'current_file' not in st.session_state or st.session_state['current_file'] != uploaded_file.name:
+                st.session_state['extracted_text'] = None
+                st.session_state['audit_results'] = None
+                st.session_state['redlined_pdf_bytes'] = None
+                st.session_state['audio_cache'] = {}
+                st.session_state['current_file'] = uploaded_file.name
+                st.session_state['audit_started'] = False
+                
             if st.session_state['extracted_text'] is None:
                 with st.spinner("Extracting text and analyzing layout"):
                     file_bytes = uploaded_file.read()
-                    st.session_state['extracted_text'] = process_document(file_bytes, use_fallback=False)
+                    st.session_state['original_pdf_bytes'] = file_bytes
+                    st.session_state['extracted_text'] = process_document(
+                        file_bytes, 
+                        file_name=uploaded_file.name, 
+                        use_fallback=False
+                    )
         
         st.markdown("### Extracted Content View")
         st.text_area(
@@ -81,23 +111,111 @@ with col1:
         
         if st.button("Run Legal Audit", type="primary", use_container_width=True):
             st.session_state['audit_started'] = True
+            st.session_state['audit_results'] = None
+            st.session_state['redlined_pdf_bytes'] = None
+            st.session_state['audio_cache'] = {}
     else:
         st.info("Awaiting document upload")
-        st.session_state['extracted_text'] = None
+        for key in ['extracted_text', 'audit_results', 'original_pdf_bytes', 'redlined_pdf_bytes']:
+            st.session_state[key] = None
+        st.session_state['audio_cache'] = {}
         st.session_state['audit_started'] = False
+        if 'current_file' in st.session_state:
+            del st.session_state['current_file']
 
-# Right Column: Analysis and Output
+
 with col2:
     st.header("2. Legal Analysis and Redlines")
     
     if st.session_state['audit_started'] and st.session_state['extracted_text']:
-        st.warning("Executing statutory analysis engine")
         
-        st.markdown("### Identified Violations and Risk Scores")
-        st.info("Core Intelligence evaluation cards will populate this space in Phase 3")
+     
+        if st.session_state['audit_results'] is None:
+            with st.spinner("Analyzing legal parameters against Indian statutory frameworks"):
+                st.session_state['audit_results'] = run_contract_audit(st.session_state['extracted_text'])
+                
+        results = st.session_state['audit_results']
         
-        st.markdown("### Regional Language Localization")
-        st.info("Sarvam AI audio player and translation elements will render here in Phase 4")
+        if "error" in results:
+            st.error(results["error"])
+        else:
+           
+            risk_score = results.get("overall_risk_score", 0)
+            st.metric(label="Overall Contract Risk Index", value=f"{risk_score} / 100")
+            st.info(f"**Executive Summary:** {results.get('summary', '')}")
+            st.markdown("---")
+            
+           
+            if st.session_state['redlined_pdf_bytes'] is None and st.session_state['original_pdf_bytes']:
+                with st.spinner("Generating visual redlines and injecting legal annotations..."):
+                    st.session_state['redlined_pdf_bytes'] = generate_redlined_pdf(
+                        st.session_state['original_pdf_bytes'], 
+                        results
+                    )
+            
+            if st.session_state['redlined_pdf_bytes']:
+                st.download_button(
+                    label="Download Redlined Contract (PDF)",
+                    data=st.session_state['redlined_pdf_bytes'],
+                    file_name="NyayaRedline_Audited_Contract.pdf",
+                    mime="application/pdf",
+                    type="primary",
+                    use_container_width=True
+                )
+            st.markdown("---")
+            
+           
+            st.markdown("### Identified Vulnerabilities")
+            issues = results.get("issues", [])
+            for idx, issue in enumerate(issues):
+                severity = issue.get("severity", "Low")
+                
+                if severity == "High":
+                    st.error(f"High Risk: {issue.get('clause_title')}")
+                elif severity == "Medium":
+                    st.warning(f"Medium Risk: {issue.get('clause_title')}")
+                else:
+                    st.info(f"Low Risk: {issue.get('clause_title')}")
+                    
+                st.markdown(f"**Governing Law:** {issue.get('governing_act')}")
+                st.write(issue.get("description"))
+                st.markdown(f"**Suggested Revision:** `{issue.get('recommended_redline')}`")
+                
+                
+                st.markdown("#### 🎧 Regional Voice Explainer")
+                
+               
+                lang_col, btn_col = st.columns([1, 2])
+                with lang_col:
+                    selected_lang_name = st.selectbox(
+                        "Language", 
+                        options=list(LANGUAGES.keys()), 
+                        key=f"lang_sel_{idx}",
+                        label_visibility="collapsed"
+                    )
+                
+                target_lang_code = LANGUAGES[selected_lang_name]
+                cache_key = f"audio_{idx}_{target_lang_code}"
+                
+                with btn_col:
+                    if st.button(f"Generate Audio Explanation", key=f"btn_{idx}"):
+                        with st.spinner(f"Translating and generating {selected_lang_name} audio..."):
+                          
+                            translated_text = translate_text(issue.get("description"), target_lang=target_lang_code)
+                          
+                            audio_bytes = text_to_speech(translated_text, target_lang=target_lang_code)
+                            
+                            if audio_bytes:
+                                st.session_state['audio_cache'][cache_key] = audio_bytes
+                            else:
+                                st.error("Failed to generate audio. Check API connections.")
+                                
+               
+                if cache_key in st.session_state['audio_cache']:
+                    st.success(f"Audio ready in {selected_lang_name}")
+                    st.audio(st.session_state['audio_cache'][cache_key], format="audio/wav")
+                    
+                st.markdown("---")
     else:
         st.markdown(
             "Once you upload a contract and click Run Legal Audit, "

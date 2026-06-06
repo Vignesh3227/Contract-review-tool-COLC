@@ -57,7 +57,7 @@ def text_to_speech(text: str, target_lang: str = "hi-IN", speaker: str = "anushk
     try:
         response = requests.post(url, json=payload, headers=headers)
         if response.status_code == 200:
-            # Unpack JSON structure and decode base64 natively
+            
             data = response.json()
             if "audios" in data and len(data["audios"]) > 0:
                 base64_string = data["audios"][0]

@@ -13,10 +13,10 @@ def test_gemini():
     print("Initializing modern google-genai client...")
     
     try:
-        # The new SDK initialization is much simpler
+       
         client = genai.Client(api_key=api_key)
         
-        # Using the standard model string
+   
         model_name = 'gemini-2.5-flash'
         
         print(f"Attempting to connect to {model_name}...")

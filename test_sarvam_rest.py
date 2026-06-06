@@ -1,5 +1,5 @@
 import base64
-import json  # Import the JSON library
+import json  
 from sarvam_service import translate_text, text_to_speech
 
 print("Testing Translation REST Endpoint...")
