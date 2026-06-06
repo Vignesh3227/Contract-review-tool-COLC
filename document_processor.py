@@ -37,7 +37,7 @@ def extract_text_from_image(file_bytes: bytes, file_extension: str) -> str:
             
         client = genai.Client(api_key=api_key)
         
-        # Normalize mime type for the API
+       
         mime_type = "image/jpeg" if file_extension.lower() in ['jpg', 'jpeg'] else "image/png"
         
         prompt = (
