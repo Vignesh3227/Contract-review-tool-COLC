@@ -40,14 +40,14 @@ def generate_redlined_pdf(pdf_bytes: bytes, audit_json: dict) -> bytes:
                     
                     strike = page.add_strikeout_annot(text_instances)
                     strike.set_colors(stroke=(1, 0, 0))  # Red
-                    strike.set_info(title="NyayaRedline AI", content=f"REVISED CLAUSE:\n{replacement}")
+                    strike.set_info(title="Pactly", content=f"REVISED CLAUSE:\n{replacement}")
                     strike.update()
                     
                     
                     last_quad = text_instances[-1]
                     annot = page.add_text_annot(last_quad.lr, f"REVISED CLAUSE:\n\n{replacement}")
                     annot.set_colors(stroke=(0, 0.5, 0))
-                    annot.set_info(title="NyayaRedline AI", content=f"REVISED CLAUSE:\n{replacement}")
+                    annot.set_info(title="Pactly", content=f"REVISED CLAUSE:\n{replacement}")
                     
                     popup_rect = fitz.Rect(last_quad.lr.x, last_quad.lr.y, last_quad.lr.x + 300, last_quad.lr.y + 200)
                     annot.set_popup(popup_rect)
@@ -66,14 +66,14 @@ def generate_redlined_pdf(pdf_bytes: bytes, audit_json: dict) -> bytes:
                    
                     highlight = page.add_highlight_annot(text_instances)
                     highlight.set_colors(stroke=(0.85, 1.0, 0.85)) # Light Green
-                    highlight.set_info(title="NyayaRedline AI", content=f"APPROVED CLAUSE:\n{reasoning}")
+                    highlight.set_info(title="Pactly", content=f"APPROVED CLAUSE:\n{reasoning}")
                     highlight.update()
                     
                   
                     first_quad = text_instances[0]
                     annot = page.add_text_annot(first_quad.ul, f"[APPROVED CLAUSE]\n\n{reasoning}")
                     annot.set_colors(stroke=(0, 0.4, 0)) 
-                    annot.set_info(title="NyayaRedline AI", content=f"APPROVED CLAUSE:\n{reasoning}")
+                    annot.set_info(title="Pactly", content=f"APPROVED CLAUSE:\n{reasoning}")
                     
                     popup_rect = fitz.Rect(first_quad.ul.x, first_quad.ul.y, first_quad.ul.x + 250, first_quad.ul.y + 150)
                     annot.set_popup(popup_rect)

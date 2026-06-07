@@ -10,7 +10,7 @@ from sarvam_service import translate_text, text_to_speech
 load_dotenv()
 
 st.set_page_config(
-    page_title="NyayaRedline AI | Smart Contract Review",
+    page_title="Pactly | Smart Contract Review",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -56,9 +56,9 @@ with st.sidebar:
     st.markdown("---")
     demo_mode = st.toggle("Enable Offline Demo Mode (Fallback Data)", value=False)
     st.markdown("---")
-    st.caption("NyayaRedline AI Framework - Built for Indian MSMEs")
+    st.caption("Pactly  - Built for Indian MSMEs")
 
-st.title("NyayaRedline AI")
+st.title("Pactly")
 st.subheader("Smart Contract Review and Redlining Tool for MSMEs")
 st.markdown("---")
 
@@ -156,7 +156,7 @@ with col2:
                 st.download_button(
                     label="Download Redlined Contract (PDF)",
                     data=st.session_state['redlined_pdf_bytes'],
-                    file_name="NyayaRedline_Audited_Contract.pdf",
+                    file_name="Pactly_Audited_Contract.pdf",
                     mime="application/pdf",
                     type="primary",
                     use_container_width=True
