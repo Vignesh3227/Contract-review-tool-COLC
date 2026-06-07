@@ -34,6 +34,25 @@ def run_contract_audit(contract_text: str) -> dict:
     13. Negotiable Instruments Act, 1881
     14. Indian Stamp Act, 1899
     15. GST Acts
+    16. Applicable State Stamp Acts (evaluate based on explicit or implied state jurisdiction in the contract):
+        - Andhra Pradesh: The Andhra Pradesh (Telangana Area) Stamp Act, 1331 F (1942) & The Stamp (Andhra Pradesh Amendment) Act, 1922
+        - Assam: The Indian Stamp (Assam Amendment) Act, 2013
+        - Bihar: The Bihar Stamp Act, 2013
+        - Chhattisgarh: The Indian Stamp (Chhattisgarh Amendment) Act, 2005
+        - Goa: The Indian Stamp (Goa, Daman & Diu) Act, 1968
+        - Gujarat: The Gujarat Stamp Act, 1958
+        - Haryana: The Indian Stamp (Haryana Amendment) Act, 1973
+        - Jammu & Kashmir: The Jammu and Kashmir Stamp Act, 1977
+        - Karnataka: The Karnataka Stamp Act, 1957
+        - Kerala: The Kerala Stamp Act, 1959
+        - Maharashtra: The Maharashtra Stamp Act, 1958
+        - Odisha: The Odisha Stamp Act, 2009
+        - Punjab: The Indian Stamp (Punjab Amendment) Act, 2019
+        - Rajasthan: The Rajasthan Stamp Act, 1998
+        - Tamil Nadu: The Indian Stamp (Tamil Nadu Amendment) Act
+        - Telangana: The Telangana (Andhra Pradesh) Stamp Act, 1331 F
+        - Uttar Pradesh: The Uttar Pradesh Stamp Act, 2008
+        - West Bengal: The Indian Stamp (West Bengal Amendment) Act
     
     CRITICAL REDLINING RULES FOR CONTEXT AWARENESS:
     1. NUMBERING PRESERVATION: You MUST preserve the exact numbering of the clause you are replacing.
