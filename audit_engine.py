@@ -67,7 +67,7 @@ def run_contract_audit(contract_text: str) -> dict:
     try:
        
         response = client.models.generate_content(
-            model='gemini-2.5-flash',
+            model='gemini-3.5-flash',
             contents=f"{system_prompt}\n\nContract Text:\n{contract_text}",
             config=types.GenerateContentConfig(
                 response_mime_type="application/json",
