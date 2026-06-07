@@ -14,7 +14,7 @@ Pactly is a Streamlit-based contract review assistant built for Indian MSMEs. It
 What the app does
 - Accepts contract files in PDF and image formats
 - Extracts and normalizes text locally before analysis
-- Uses Gemini 2.5 Flash to produce structured legal review results
+- Uses Gemini 3.5 Flash to produce structured legal review results
 - Highlights risky clauses with severity, reasoning, and suggested revisions
 - Generates a redlined PDF with visual annotations for the flagged text
 - Provides Sarvam-powered multilingual explanations and audio playback
@@ -30,10 +30,49 @@ How it is organized
 Tech Stack
 - Python
 - Streamlit
-- Google GenAI / Gemini 2.5 Flash
+- Google GenAI / Gemini 3.5 Flash
 - Sarvam REST APIs
 - PyMuPDF
 - Requests
 
 Project Goal
 The project focuses on making legal review faster, more accessible, and easier to understand by combining automated clause analysis, visual redlining, and voice explanations in one workflow.
+
+Run locally (from GitHub)
+
+If you prefer to run the app locally instead of using the hosted link, follow these steps:
+
+1. Clone the repository and change into the project directory:
+- git clone <repo-url>
+- cd <repo-folder>
+
+2. Create and activate a virtual environment.
+- Windows (PowerShell):
+	- python -m venv .venv
+	- .\.venv\Scripts\Activate.ps1
+- macOS / Linux:
+	- python3 -m venv .venv
+	- source .venv/bin/activate
+
+3. Install dependencies:
+- pip install -r requirements.txt
+
+4. Run the Streamlit app:
+- streamlit run app.py
+
+Notes:
+- Replace `<repo-url>` and `<repo-folder>` with the repository URL and folder name.
+- This project targets Python 3.12 — make sure Python 3.12 is installed and used for the virtual environment.
+
+Environment variables (.env)
+- Create a `.env` file in the project root to supply API keys for external services. Add at least the following keys:
+
+	SARVAM_API_KEY=your_sarvam_api_key
+	GEMINI_API_KEY=your_gemini_api_key
+
+- Keep `.env` secret and do not commit it to version control. On Windows PowerShell you can create it with:
+
+	echo SARVAM_API_KEY=your_sarvam_api_key > .env
+	echo GEMINI_API_KEY=your_gemini_api_key >> .env
+
+- Ensure the virtual environment is active before installing dependencies.
