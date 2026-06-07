@@ -5,7 +5,7 @@ from google.genai import types
 
 def run_contract_audit(contract_text: str) -> dict:
     """
-    Sends contract text to Gemini 2.5 Flash and enforces a structured JSON response
+    Sends contract text to Gemini 3.5 Flash and enforces a structured JSON response
     based on Indian statutory frameworks.
     """
     api_key = os.getenv("GEMINI_API_KEY")

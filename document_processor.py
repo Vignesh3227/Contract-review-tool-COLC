@@ -29,7 +29,7 @@ def extract_text_from_pdf(file_bytes: bytes) -> str:
         return f"Extraction Error: {str(e)}"
 
 def extract_text_from_image(file_bytes: bytes, file_extension: str) -> str:
-    """Uses Gemini 2.5 Flash Vision to act as a highly accurate OCR engine for images."""
+    """Uses Gemini 3.5 Flash Vision to act as a highly accurate OCR engine for images."""
     try:
         api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
